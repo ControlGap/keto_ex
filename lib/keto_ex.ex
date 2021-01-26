@@ -162,11 +162,11 @@ defmodule KetoEx do
     |> handle_response()
   end
 
-  # if this is an allowed? call - just return the boolean.
+  # if this is an allowed? response - just return the boolean.
   defp handle_response({:ok, %Tesla.Env{status: 200, body: %{allowed: allowed?}}}), do: allowed?
   # all other cases return a error/success tuple.
   defp handle_response({:ok, %Tesla.Env{status: 200, body: body}}), do: {:ok, body}
-  defp handle_response({:ok, %Tesla.Env{status: 204, body: body}}), do: {:ok, body}
+  defp handle_response({:ok, %Tesla.Env{status: 204}}), do: :ok
   defp handle_response({:ok, %Tesla.Env{status: 404, body: _body}}), do: {:error, "not found"}
 
   defp handle_response({:ok, %Tesla.Env{status: _, body: body}}),
