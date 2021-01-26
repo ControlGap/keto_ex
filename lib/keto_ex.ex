@@ -41,7 +41,7 @@ defmodule KetoEx do
           resource :: String.t(),
           context :: map()
         ) :: check_allowed_input()
-  def request(resource, action, subject, context \\ %{}) do
+  def request(subject, action, resource, context \\ %{}) do
     %{subject: subject, action: action, resource: resource, context: context}
   end
 
