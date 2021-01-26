@@ -13,12 +13,11 @@ defmodule KetoEx do
 
   @type flavor :: :exact | :glob | :regex
   @type check_allowed_input :: %{
+          subject: Strting.t(),
           action: Strting.t(),
-          context: map(),
           resource: Strting.t(),
-          subject: Strting.t()
+          context: map()
         }
-
 
   @doc """
   Create a tesla client to be passed into all the other functions
@@ -34,16 +33,16 @@ defmodule KetoEx do
   end
 
   @doc """
-  Generate a request map (action + resource + subject) with an optional context
+  Generate a request map (subject, action, resource) with an optional context
   """
   @spec request(
-          resource :: String.t(),
-          action :: String.t(),
           subject :: String.t(),
+          action :: String.t(),
+          resource :: String.t(),
           context :: map()
         ) :: check_allowed_input()
   def request(resource, action, subject, context \\ %{}) do
-    %{resource: resource, action: action, subject: subject, context: context}
+    %{subject: subject, action: action, resource: resource, context: context}
   end
 
   @doc """
@@ -233,7 +232,6 @@ defmodule KetoEx do
     |> handle_response()
   end
 
-
   @doc """
   Fetch version number
   """
@@ -245,7 +243,10 @@ defmodule KetoEx do
   end
 
   # if this is an allowed? response - just return the boolean.
-  defp handle_response({:ok, %Tesla.Env{status: status, body: %{allowed: allowed?}}}) when status in [200, 403], do: allowed?
+  defp handle_response({:ok, %Tesla.Env{status: status, body: %{allowed: allowed?}}})
+       when status in [200, 403],
+       do: allowed?
+
   # all other cases return a error/success tuple.
   defp handle_response({:ok, %Tesla.Env{status: 200, body: body}}), do: {:ok, body}
   defp handle_response({:ok, %Tesla.Env{status: 204}}), do: :ok

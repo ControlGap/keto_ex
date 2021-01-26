@@ -13,9 +13,9 @@ client = KetoEx.client()
 
 # upsert a new policy
 policy = %{
-  resources: ["user1"],
+  subjects: ["user1"],
   actions: ["read"],
-  subjects: ["posts"],
+  resources: ["posts"],
   description: "user1 is allowed to read posts",
   effect: "allow"
 }
