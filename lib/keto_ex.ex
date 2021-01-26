@@ -4,7 +4,7 @@ defmodule KetoEx do
 
   https://www.ory.sh/keto/docs/reference/api
   """
-  alias KetoEx.{Role,Policy}
+  alias KetoEx.{Role, Policy}
   @base "/engines/acp/ory/"
   @flavors [:exact, :regex, :glob, "exact", "regex", "glob"]
 
@@ -162,8 +162,12 @@ defmodule KetoEx do
     |> handle_response()
   end
 
+  # if this is an allowed? call - just return the boolean.
   defp handle_response({:ok, %Tesla.Env{status: 200, body: %{allowed: allowed?}}}), do: allowed?
+  # all other cases return a error/success tuple.
   defp handle_response({:ok, %Tesla.Env{status: 200, body: body}}), do: {:ok, body}
+  defp handle_response({:ok, %Tesla.Env{status: 204, body: body}}), do: {:ok, body}
+  defp handle_response({:ok, %Tesla.Env{status: 404, body: _body}}), do: {:error, "not found"}
 
   defp handle_response({:ok, %Tesla.Env{status: _, body: body}}),
     do: {:error, body}
@@ -174,6 +178,9 @@ defmodule KetoEx do
 
   defp handle_response({:ok, %Tesla.Env{status: 200, body: body}}, a_struct),
     do: {:ok, Kernel.struct(a_struct, body)}
+
+  defp handle_response({:ok, %Tesla.Env{status: 404, body: _body}}, _a_struct),
+    do: {:error, "not found"}
 
   defp handle_response({:ok, %Tesla.Env{status: _, body: body}}, _a_struct),
     do: {:error, body}
