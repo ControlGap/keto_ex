@@ -4,7 +4,7 @@ defmodule KetoEx do
 
   https://www.ory.sh/keto/docs/reference/api
   """
-  alias KetoEx.{Role.Policy}
+  alias KetoEx.{Role,Policy}
   @base "/engines/acp/ory/"
   @flavors [:exact, :regex, :glob, "exact", "regex", "glob"]
 
