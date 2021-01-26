@@ -1,12 +1,12 @@
 defmodule KetoEx.Policy do
   @moduledoc """
   Keto Access Control Policy
+
+  effect can only be allow | deny
   """
 
-  @enforce_keys [:id, :actions, :conditions, :description, :effect, :resources, :subjects]
-
   @derive Jason.Encoder
-
+  @enforce_keys [:id, :actions, :conditions, :description, :effect, :resources, :subjects]
   defstruct id: nil,
             actions: [],
             conditions: %{},
