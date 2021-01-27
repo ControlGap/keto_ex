@@ -187,7 +187,7 @@ defmodule KetoEx do
       when flavor in @flavors do
     client
     |> Tesla.put(@base <> "#{flavor}/roles/#{role_id}/members", body)
-    |> handle_response()
+    |> handle_response(Role)
   end
 
   @doc """
