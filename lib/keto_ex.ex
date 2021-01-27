@@ -255,6 +255,10 @@ defmodule KetoEx do
   defp handle_response({:ok, %Tesla.Env{status: _, body: body}}),
     do: {:error, body}
 
+  defp handle_response({:error, :econnrefused}) do
+    {:error, "Connection to Keto Refused - ensure `client/2` is called with the correct hostname"}
+  end
+
   # when a struct is passed into this fn, returns a struct,
   defp handle_response({:ok, %Tesla.Env{status: 200, body: body}}, a_struct) when is_list(body),
     do: {:ok, Enum.map(body, &Kernel.struct(a_struct, &1))}
@@ -267,4 +271,8 @@ defmodule KetoEx do
 
   defp handle_response({:ok, %Tesla.Env{status: _, body: body}}, _a_struct),
     do: {:error, body}
+
+  defp handle_response({:error, :econnrefused}, _a_struct) do
+    {:error, "Connection to Keto Refused - ensure `client/2` is called with the correct hostname"}
+  end
 end
