@@ -24,8 +24,11 @@ defmodule KetoEx do
   """
   @spec client(any, nil | maybe_improper_list | map) :: Tesla.Client.t()
   def client(host \\ "localhost", opts \\ [port: 4466, scheme: "http"]) do
+    port = opts[:port] || 4466
+    scheme = opts[:scheme] || "http"
+
     middleware = [
-      {Tesla.Middleware.BaseUrl, "#{opts[:scheme]}://#{host}:#{opts[:port]}"},
+      {Tesla.Middleware.BaseUrl, "#{scheme}://#{host}:#{port}"},
       {Tesla.Middleware.JSON, engine_opts: [keys: :atoms!]}
     ]
 
@@ -259,6 +262,8 @@ defmodule KetoEx do
     {:error, "Connection to Keto Refused - ensure `client/2` is called with the correct hostname"}
   end
 
+  defp handle_response(err), do: err
+
   # when a struct is passed into this fn, returns a struct,
   defp handle_response({:ok, %Tesla.Env{status: 200, body: body}}, a_struct) when is_list(body),
     do: {:ok, Enum.map(body, &Kernel.struct(a_struct, &1))}
@@ -275,4 +280,6 @@ defmodule KetoEx do
   defp handle_response({:error, :econnrefused}, _a_struct) do
     {:error, "Connection to Keto Refused - ensure `client/2` is called with the correct hostname"}
   end
+
+  defp handle_response(err, _struct), do: err
 end
