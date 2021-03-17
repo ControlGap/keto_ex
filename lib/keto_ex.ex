@@ -274,7 +274,7 @@ defmodule KetoEx do
   defp handle_response({:ok, %Tesla.Env{status: 404, body: _body}}, _a_struct),
     do: {:error, "not found"}
 
-  defp handle_response({:ok, %Tesla.Env{status: 500, body: body}}, _a_struct) do
+  defp handle_response({:ok, %Tesla.Env{status: 500, body: _body}}, _a_struct) do
     {:error, "Server error"}
   end
 
